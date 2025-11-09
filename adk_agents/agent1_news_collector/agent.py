@@ -1,0 +1,32 @@
+from google.adk.agents import Agent
+from google.adk.tools import AgentTool
+
+from .tools import fetch_stock_news_from_google_news, predict_index
+
+google_search_agent = Agent(
+    name="google_search_agent",
+    model="gemini-2.0-flash",
+    instruction="Retrieves recent news articles from Google News.",
+    tools=[fetch_stock_news_from_google_news]
+)
+
+predict_agent = Agent(
+    name="predict_index_price_agent",
+    model="gemini-2.0-flash",
+    instruction="Predict the closing price of a stock index based on news articles.",
+    tools=[predict_index]
+)
+
+root_agent = Agent(
+    name="news_agent_v1",
+    model="gemini-2.0-flash", # Can be a string for Gemini or a LiteLlm object
+    description="Analyzes market news to predict stock index trends.",
+    instruction="You are a helpful finance assistant. When the user asks for a prediction about a specific index(like DOW or N225), use the 'predict_index_price_agent' tool to provide a prediction.",
+
+    tools=[
+        
+        AgentTool(google_search_agent, skip_summarization=False),
+        AgentTool(predict_agent, skip_summarization=False)
+        
+    ]
+)
