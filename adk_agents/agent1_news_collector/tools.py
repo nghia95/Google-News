@@ -68,7 +68,7 @@ def fetch_stock_news_from_google_news(query:str):
     return {"status": "OK"}
 
 
-def predict_index(target_index: str, query: str) -> dict:
+def predict_index(target_index: str) -> dict:
     """The minimum function required to analyze news articles and have Gemini generate a prediction and its rationale."""
     # ----------------------------------------------------
     # 💡 注意: clientは通常モジュールレベルで一度だけ初期化します
@@ -89,19 +89,14 @@ def predict_index(target_index: str, query: str) -> dict:
     if client is None:
         return {"status": "error", "message": "Client not initialized."}
 
-    if not query:
-        return {"status": "data_insufficient", "message": "No news data provided."}
+    # if not query:
+    #     return {"status": "data_insufficient", "message": "No news data provided."}
 
     
     # 3. 最小限のプロンプトと必須JSON形式
     prompt = f"""
     Based *only* on the provided news articles in the {data}, analyze the sentiment and predict the closing direction for the **{target_index}** index. 
     Output the result strictly in the required JSON format.
-
-    News Articles:
-    ---
-    {query}
-    ---
 
     Required JSON Format:
     {{
